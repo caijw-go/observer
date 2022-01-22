@@ -17,11 +17,7 @@ func RegisterListener(listeners ...Listener) {
     for _, listener := range listeners {
         for _, event := range listener.Listen() {
             eventName := getEventName(event)
-            if _, ok := eventListenerMap[eventName]; !ok {
-                eventListenerMap[eventName] = []Listener{listener}
-            } else {
-                eventListenerMap[eventName] = append(eventListenerMap[eventName], listener)
-            }
+            eventListenerMap[eventName] = append(eventListenerMap[eventName], listener)
         }
     }
 }
