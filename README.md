@@ -36,15 +36,16 @@ func (l testListener) Listen() []interface{} {
 }
 
 func (l testListener) Process(event interface{}) {
+    fmt.Printf("%T事件Process\n", event)
     switch event.(type) {
     case *events.TestEvent:
         e := event.(*events.TestEvent)
         e.Field = "xxx" //指针类型可以修改事件属性，并重新赋值给event
         event = e
-        fmt.Println(e)
     case events.TestEvent:
         e := event.(events.TestEvent)
-        fmt.Println(e)
+        e.Field = "xxx"
+        event = e//这个操作并没有意义，因为event不是指针，不会动态修改
     }
 }
 ```
@@ -74,12 +75,14 @@ func main() {
 import "github.com/caijw-go/observer"
 
 //事件：不需要修改
-observer.Dispatch(event.TestEvent{})
+e1:= event.TestEvent{}
+observer.Dispatch(e1)
+fmt.Println(e1)
 
 //事件指针：会动态修改事件的值
-e:= &event.TestEvent{}
-observer.Dispatch(e)
-fmt.Println(e)
+e2:= &event.TestEvent{}
+observer.Dispatch(e2)
+fmt.Println(e2)
 ```
 
 
